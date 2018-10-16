@@ -1,22 +1,23 @@
 package main
 
 import (
-	"GoCQLSockets/client"
+	"GoCQLSockets/examples"
 	"GoCQLSockets/server/database"
-	"GoCQLSockets/server/sockets"
+	"GoCQLSockets/server/tcp_server"
 	"flag"
 	"strings"
 )
 
 func main() {
-	flagMode := flag.String("mode", "server", "start in client or server mode")
+	flagMode := flag.String("mode", "server", "start in tcp_client or server mode")
 	flag.Parse()
 	if strings.ToLower(*flagMode) == "server" {
+		cassandra.StartCassandra()
 		CassandraSession := cassandra.Session
 		defer CassandraSession.Close()
-		sockets.StartServerMode()
+		tcp_server.StartServerMode()
 	} else {
-		client.StartClientMode()
+		examples.Example()
 	}
 
 }

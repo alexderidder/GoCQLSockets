@@ -1,11 +1,11 @@
-package sockets
+package tcp_server
 
 import (
-	"GoCQLSockets/server/timeseries"
+	"GoCQLSockets/config"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"net"
+	"strconv"
 )
 
 type ClientManager struct {
@@ -25,8 +25,9 @@ type Client struct {
 }
 
 func StartServerMode() {
+
 	fmt.Println("Starting server...")
-	listener, error := net.Listen("tcp", ":12345")
+	listener, error := net.Listen("tcp", config.Config.Server.IPAddress+config.Config.Server.Port)
 	if error != nil {
 		fmt.Println(error)
 	}
@@ -66,6 +67,7 @@ func (manager *ClientManager) start() {
 }
 
 func (manager *ClientManager) receive(client *Client) {
+	counter := 0
 	for {
 		message := make([]byte, 4096)
 		length, err := client.socket.Read(message)
@@ -75,14 +77,10 @@ func (manager *ClientManager) receive(client *Client) {
 			break
 		}
 		if length > 0 {
+			counter++
 			message = bytes.Trim(message, "\x00")
-			fmt.Println("RECEIVED: " + string(message))
-			select {
-			case client.data <- message:
-			default:
-				close(client.data)
-				delete(manager.clients, client)
-			}
+			fmt.Println(string(message) + " : " + strconv.Itoa(counter))
+			client.data <- []byte(strconv.Itoa(counter))
 		}
 	}
 }
@@ -95,19 +93,7 @@ func (manager *ClientManager) send(client *Client) {
 			if !ok {
 				return
 			} else {
-				bytes, err := timeseries.RequestAverage(message);
-
-				if err != nil {
-					test := Error{ErrorMessage: err.Error()}
-					b, err := json.Marshal(test)
-					if err != nil{
-						fmt.Print(err.Error())
-					}else {
-						client.socket.Write(b)
-					}
-				} else {
-					client.socket.Write(bytes)
-				}
+					client.socket.Write(append([]byte("Received:"), message...))
 			}
 		}
 	}}
