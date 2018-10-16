@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-type Configuration  struct {
+type Configuration struct {
 	Server struct {
 		IPAddress string `json:"ip-address"`
 		Port      string `json:"port"`
@@ -16,11 +16,13 @@ type Configuration  struct {
 			Name      string `json:"name"`
 			IPAddress string `json:"ip-address"`
 		} `json:"clusters"`
-		Keyspace string `json:"keyspace"`
+		Keyspace      string `json:"keyspace"`
+		ReconnectTime int    `json:"reconnect_time"`
 	} `json:"database"`
 	Client struct {
-		IPAddress string `json:"ip-address"`
-		Port      string `json:"port"`
+		IPAddress     string `json:"ip-address"`
+		Port          string `json:"port"`
+		ReconnectTime int    `json:"reconnect_time"`
 	} `json:"client"`
 }
 

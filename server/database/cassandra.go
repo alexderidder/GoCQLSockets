@@ -4,6 +4,8 @@ import (
 	"GoCQLSockets/config"
 	"fmt"
 	"github.com/gocql/gocql"
+	"math/rand"
+	"time"
 )
 
 var Session *gocql.Session
@@ -19,11 +21,24 @@ func connect(){
 	var err error
 	Session, err = cluster.CreateSession()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		Reconnect()
 	}
 	fmt.Println("cassandra connection")
 }
+func Reconnect(){
+	var err error
+	for {
+		time.Sleep(time.Duration(rand.Intn(config.Config.Database.ReconnectTime)) * time.Second)
+		Session, err = cluster.CreateSession()
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			return
+		}
+	}
 
+}
 func clusterConfig(){
 	var ipAddresses []string
 	for _, value :=  range config.Config.Database.Clusters{

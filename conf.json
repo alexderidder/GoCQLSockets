@@ -10,10 +10,12 @@
         "ip-address": "127.0.0.1"
       }
     ],
-    "keyspace": "sockettest"
+    "keyspace": "sockettest",
+    "reconnect_time" : 5
   },
   "client": {
     "ip-address": "127.0.0.1",
-    "port": ":12345"
+    "port": ":12345",
+    "reconnect_time" : 1
   }
 }

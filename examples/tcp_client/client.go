@@ -4,6 +4,7 @@ import (
 	"GoCQLSockets/config"
 	"bytes"
 	"fmt"
+	"math/rand"
 	"net"
 	"time"
 )
@@ -34,7 +35,7 @@ func reconnect(){
 		connection, error := net.Dial("tcp", config.Config.Client.IPAddress+config.Config.Client.Port)
 		if error != nil {
 			fmt.Println(error)
-			time.Sleep(1 * time.Second)
+			time.Sleep(time.Duration(rand.Intn(config.Config.Client.ReconnectTime)) * time.Second)
 		} else {
 			Client.Socket = connection
 			return
