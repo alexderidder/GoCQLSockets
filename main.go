@@ -2,8 +2,8 @@ package main
 
 import (
 	"GoCQLSockets/examples"
-	"GoCQLSockets/server/database"
-	"GoCQLSockets/server/tcp_server"
+	"GoCQLSockets/server/database/connector"
+	"GoCQLSockets/server/tcp_server/connector"
 	"flag"
 	"strings"
 )
@@ -15,7 +15,7 @@ func main() {
 		go cassandra.StartCassandra()
 		CassandraSession := cassandra.Session
 		defer CassandraSession.Close()
-		tcp_server.StartServerMode()
+		connector.StartServerMode()
 	} else {
 		examples.Example()
 	}

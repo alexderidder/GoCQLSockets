@@ -1,7 +1,12 @@
 {
   "server": {
     "ip-address": "127.0.0.1",
-    "port": ":12345"
+    "port": ":12345",
+    "certs": {
+      "directory": "server/tcp_server/certs/",
+      "pem": "server.pem",
+      "key": "server.key"
+    }
   },
   "database": {
     "clusters": [
@@ -11,5 +16,6 @@
       }
     ],
     "keyspace": "sockettest",
-    "reconnect_time" : 5
-  }}
+    "reconnect_time": 5
+  }
+}

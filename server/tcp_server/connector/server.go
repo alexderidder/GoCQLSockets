@@ -1,9 +1,12 @@
-package tcp_server
+package connector
 
 import (
-	"GoCQLSockets/config"
+	"GoCQLSockets/server/config"
 	"bytes"
+	"crypto/rand"
+	"crypto/tls"
 	"fmt"
+	"log"
 	"net"
 	"strconv"
 )
@@ -27,7 +30,16 @@ type Client struct {
 func StartServerMode() {
 
 	fmt.Println("Starting server...")
-	listener, err := net.Listen("tcp", config.Config.Server.IPAddress+config.Config.Server.Port)
+	cert, err := tls.LoadX509KeyPair(config.Config.Server.Certs.Directory+config.Config.Server.Certs.Pem, config.Config.Server.Certs.Directory+config.Config.Server.Certs.Key)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	tlsConfig := tls.Config{Certificates: []tls.Certificate{cert}, ClientAuth: tls.RequireAnyClientCert}
+	tlsConfig.Rand = rand.Reader
+	listener, err := tls.Listen("tcp", config.Config.Server.IPAddress+config.Config.Server.Port, &tlsConfig)
+
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -41,6 +53,7 @@ func StartServerMode() {
 		connection, err := listener.Accept()
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		client := &Client{socket: connection, data: make(chan []byte)}
 		manager.register <- client

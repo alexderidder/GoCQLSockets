@@ -1,9 +1,11 @@
 package tcp_client
 
 import (
-	"GoCQLSockets/config"
+	"GoCQLSockets/examples/config"
 	"bytes"
+	"crypto/tls"
 	"fmt"
+	"log"
 	"math/rand"
 	"net"
 	"time"
@@ -19,27 +21,28 @@ var Client *Iets
 func StartClientMode() {
 	Client = &Iets{}
 	fmt.Println("Starting tcp_client...")
-	connection, error := net.Dial("tcp", config.Config.Client.IPAddress+config.Config.Client.Port)
-	if error != nil {
-		fmt.Println(error)
-		reconnect()
-	}else{
-		Client.Socket = connection
-	}
+	reconnect()
 	go Client.receive()
 }
 
-func reconnect(){
+func reconnect() {
 	for {
-		fmt.Println("Reconnecting tcp_client...")
-		connection, error := net.Dial("tcp", config.Config.Client.IPAddress+config.Config.Client.Port)
-		if error != nil {
-			fmt.Println(error)
+
+		cert, err := tls.LoadX509KeyPair(config.Config.Client.Certs.Directory+config.Config.Client.Certs.Pem, config.Config.Client.Certs.Directory+config.Config.Client.Certs.Key)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tlsConfig := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true}
+		connection, err := tls.Dial("tcp", config.Config.Client.IPAddress+config.Config.Client.Port, &tlsConfig)
+
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println("Reconnecting tcp_client...")
 			time.Sleep(time.Duration(rand.Intn(config.Config.Client.ReconnectTime)) * time.Second)
 		} else {
 			Client.Socket = connection
 			return
-	}
+		}
 	}
 
 }
@@ -61,10 +64,10 @@ func (client *Iets) receive() {
 
 }
 
-func (client *Iets) Write(message []byte) int{
-		length, err := client.Socket.Write(message)
-		if err != nil{
-			return -1
-		}
-		return length
+func (client *Iets) Write(message []byte) int {
+	length, err := client.Socket.Write(message)
+	if err != nil {
+		return -1
+	}
+	return length
 }

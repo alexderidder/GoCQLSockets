@@ -1,7 +1,7 @@
 package cassandra
 
 import (
-	"GoCQLSockets/config"
+	"GoCQLSockets/server/config"
 	"fmt"
 	"github.com/gocql/gocql"
 	"math/rand"
@@ -17,7 +17,7 @@ func StartCassandra() {
 	connect()
 }
 
-func connect(){
+func connect() {
 	var err error
 	Session, err = cluster.CreateSession()
 	if err != nil {
@@ -26,7 +26,7 @@ func connect(){
 	}
 	fmt.Println("cassandra connection")
 }
-func Reconnect(){
+func Reconnect() {
 	var err error
 	for {
 		time.Sleep(time.Duration(rand.Intn(config.Config.Database.ReconnectTime)) * time.Second)
@@ -39,9 +39,9 @@ func Reconnect(){
 	}
 
 }
-func clusterConfig(){
+func clusterConfig() {
 	var ipAddresses []string
-	for _, value :=  range config.Config.Database.Clusters{
+	for _, value := range config.Config.Database.Clusters {
 		ipAddresses = append(ipAddresses, value.IPAddress)
 	}
 	cluster = gocql.NewCluster(ipAddresses...)

@@ -10,6 +10,11 @@ type Configuration struct {
 	Server struct {
 		IPAddress string `json:"ip-address"`
 		Port      string `json:"port"`
+		Certs     struct {
+			Directory string `json:"directory"`
+			Pem       string `json:"pem"`
+			Key       string `json:"key"`
+		} `json:"certs"`
 	} `json:"server"`
 	Database struct {
 		Clusters []struct {
@@ -24,7 +29,7 @@ type Configuration struct {
 var Config Configuration
 
 func init() {
-	file, _ := os.Open("server/conf.json")
+	file, _ := os.Open("server/config/conf.json")
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	Config = Configuration{}
