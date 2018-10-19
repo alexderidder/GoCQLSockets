@@ -27,9 +27,9 @@ type Client struct {
 func StartServerMode() {
 
 	fmt.Println("Starting server...")
-	listener, error := net.Listen("tcp", config.Config.Server.IPAddress+config.Config.Server.Port)
-	if error != nil {
-		fmt.Println(error)
+	listener, err := net.Listen("tcp", config.Config.Server.IPAddress+config.Config.Server.Port)
+	if err != nil {
+		fmt.Println(err)
 	}
 	manager := ClientManager{
 		clients:    make(map[*Client]bool),
@@ -38,9 +38,9 @@ func StartServerMode() {
 	}
 	go manager.start()
 	for {
-		connection, _ := listener.Accept()
-		if error != nil {
-			fmt.Println(error)
+		connection, err := listener.Accept()
+		if err != nil {
+			fmt.Println(err)
 		}
 		client := &Client{socket: connection, data: make(chan []byte)}
 		manager.register <- client
@@ -93,7 +93,8 @@ func (manager *ClientManager) send(client *Client) {
 			if !ok {
 				return
 			} else {
-					client.socket.Write(append([]byte("Received:"), message...))
+				client.socket.Write(append([]byte("Received:"), message...))
 			}
 		}
-	}}
+	}
+}
