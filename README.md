@@ -5,7 +5,7 @@ Communicate with Cassandra using GoCQL and websockets
 http://cassandra.apache.org/download/
 
 ## Run Cassandra
-In your cassandra folder run file 'cassandra.exe'
+In your cassandra folder run file 'bin/cassandra.exe'
 
 ## Create SSL Certificates
 https://medium.com/the-new-control-plane/generating-self-signed-certificates-on-windows-7812a600c2d8
