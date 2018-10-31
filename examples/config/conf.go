@@ -28,7 +28,7 @@ func init() {
 	Config = Configuration{}
 	err := decoder.Decode(&Config)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error parsing client config:", err)
 	}
 
 }

@@ -4,7 +4,6 @@ import (
 	"GoCQLSockets/server/config"
 	"fmt"
 	"github.com/gocql/gocql"
-	"math/rand"
 	"time"
 )
 
@@ -29,7 +28,7 @@ func connect() {
 func Reconnect() {
 	var err error
 	for {
-		time.Sleep(time.Duration(rand.Intn(config.Config.Database.ReconnectTime)) * time.Second)
+		time.Sleep(time.Duration(config.Config.Database.ReconnectTime) * time.Second)
 		Session, err = cluster.CreateSession()
 		if err != nil {
 			fmt.Println(err)

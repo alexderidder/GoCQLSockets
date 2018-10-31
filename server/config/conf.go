@@ -15,6 +15,10 @@ type Configuration struct {
 			Pem       string `json:"pem"`
 			Key       string `json:"key"`
 		} `json:"certs"`
+		Messages struct {
+			Timeout    int `json:"timeout"`
+			BufferSize uint32 `json:"buffer_size"`
+		} `json:"messages"`
 	} `json:"server"`
 	Database struct {
 		Clusters []struct {
@@ -22,7 +26,7 @@ type Configuration struct {
 			IPAddress string `json:"ip-address"`
 		} `json:"clusters"`
 		Keyspace      string `json:"keyspace"`
-		ReconnectTime int    `json:"reconnect_time"`
+		ReconnectTime uint32    `json:"reconnect_time"`
 	} `json:"database"`
 }
 
@@ -35,7 +39,7 @@ func init() {
 	Config = Configuration{}
 	err := decoder.Decode(&Config)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error parsing server config:", err)
 	}
 
 }

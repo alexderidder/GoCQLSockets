@@ -6,6 +6,10 @@
       "directory": "server/tcp_server/certs/",
       "pem": "server.pem",
       "key": "server.key"
+    },
+    "messages": {
+      "timeout" : 3,
+      "buffer_size" : 4096
     }
   },
   "database": {
